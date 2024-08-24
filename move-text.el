@@ -6,7 +6,8 @@
 ;; Keywords: edit
 ;; Url: https://github.com/emacsfodder/move-text
 ;; Compatibility: GNU Emacs 25.1
-;; Version: 2.0.10
+;; Version: 2.1.0
+;; Package-Requires: ((evil "1.0.0"))
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -57,6 +58,7 @@
 
 ;;; Code:
 (require 'cl-lib)
+(require 'evil)
 
 (defun move-text-get-region-and-prefix ()
     "Get the region and prefix for the `interactive' macro, without aborting.
@@ -154,7 +156,10 @@ We use `prefix-numeric-value' to return a number.
     (let ((start (point)))
       (insert line-text)
       (setq deactivate-mark nil)
-      (set-mark start))))
+      (set-mark start)
+      (when (and (bound-and-true-p evil-mode) (string= evil-state "visual"))
+        (backward-char 1)
+        (evil-visual-make-selection (mark) (point))))))
 
 ;;;###autoload
 (defun move-text-region-up (start end n)
