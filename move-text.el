@@ -60,6 +60,9 @@
 (require 'cl-lib)
 (require 'evil)
 
+(defvar move-text-mode-map (make-sparse-keymap)
+  "Keymap for `move-text-mode'.")
+
 (defun move-text-get-region-and-prefix ()
     "Get the region and prefix for the `interactive' macro, without aborting.
 
@@ -192,10 +195,16 @@ We use `prefix-numeric-value' to return a number.
 
 ;;;###autoload
 (defun move-text-default-bindings ()
-  "Bind `move-text-up' and `move-text-down' to M-up & M-down."
+  "Bind `move-text-up' and `move-text-down' to M-<up> and M-<down>."
   (interactive)
-  (global-set-key [M-down] 'move-text-down)
-  (global-set-key [M-up]   'move-text-up))
+  (keymap-set move-text-mode-map "M-<down>" 'move-text-down)
+  (keymap-set move-text-mode-map "M-<up>"   'move-text-up))
+
+;;;###autoload
+(define-minor-mode move-text-mode
+  "Minor mode for moving lines up and down."
+  :init-value nil
+  :keymap move-text-mode-map)
 
 (provide 'move-text)
 
